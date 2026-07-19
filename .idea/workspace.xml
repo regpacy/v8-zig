@@ -12,8 +12,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="add v8">
+    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="remove comments from build">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.zig" beforeDir="false" afterPath="$PROJECT_DIR$/build.zig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.zig" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.zig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +51,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Zig build.Build and Run.executor": "Run",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
@@ -64,6 +67,29 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/thirdparty/v8" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Build and Run" type="ZIGBRAINS_BUILD" factoryName="ZIGBRAINS_BUILD" temporary="true">
+      <ZigBrainsOption name="workingDirectory" value="$PROJECT_DIR$" />
+      <envs />
+      <ZigBrainsOption name="buildSteps" value="run" />
+      <ZigBrainsOption name="compilerArgs" value="" />
+      <ZigBrainsOption name="debugBuildSteps" value="" />
+      <ZigBrainsOption name="debugCompilerArgs" value="" />
+      <ZigBrainsOption name="exePath" value="" />
+      <ZigBrainsOption name="exeArgs" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Zig build.Build and Run" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
   </component>
@@ -74,7 +100,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1784479569381</updated>
-      <workItem from="1784479570397" duration="681000" />
+      <workItem from="1784479570397" duration="973000" />
     </task>
     <task id="LOCAL-00001" summary="fist commit">
       <option name="closed" value="true" />
@@ -92,7 +118,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784480095184</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="remove comments from build">
+      <option name="closed" value="true" />
+      <created>1784480262709</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1784480262709</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -112,6 +146,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fist commit" />
     <MESSAGE value="add v8" />
-    <option name="LAST_COMMIT_MESSAGE" value="add v8" />
+    <MESSAGE value="remove comments from build" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove comments from build" />
   </component>
 </project>
