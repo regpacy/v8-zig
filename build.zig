@@ -16,12 +16,19 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
+            .link_libcpp = true,
             .imports = &.{
                 .{ .name = "v8_zig", .module = mod },
             },
         }),
+        .use_llvm = true,
+        .use_lld = true,
     });
-
+    exe.root_module.linkSystemLibrary("stdc++", .{});
+    exe.root_module.addObjectFile(b.path("thirdparty/v8/libv8_monolith.a"));
+    exe.root_module.linkSystemLibrary("pthread", .{});
+    exe.root_module.linkSystemLibrary("dl", .{}); // Linux
+        exe.root_module.addObjectFile(.{ .cwd_relative = "/usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so" });
     b.installArtifact(exe);
 
     const run_step = b.step("run", "Run the app");
