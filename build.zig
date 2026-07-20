@@ -8,6 +8,7 @@ pub fn build(b: *std.Build) void {
     const mod = b.addModule("v8_zig", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
+        .link_libcpp = true,
     });
 
     const exe = b.addExecutable(.{
@@ -16,7 +17,6 @@ pub fn build(b: *std.Build) void {
             .root_source_file = b.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
-            .link_libcpp = true,
             .imports = &.{
                 .{ .name = "v8_zig", .module = mod },
             },
@@ -24,8 +24,8 @@ pub fn build(b: *std.Build) void {
         .use_llvm = true,
         .use_lld = true,
     });
-    exe.root_module.linkSystemLibrary("stdc++", .{});
-    exe.root_module.addIncludePath(b.path("thirdparty/v8"));
+    mod.linkSystemLibrary("stdc++", .{});
+    mod.addIncludePath(b.path("thirdparty/v8"));
 
     // Pulls the prebuilt V8 headers/static lib from GitHub releases if
     // they're not already present locally, so a clean checkout can build
@@ -89,12 +89,11 @@ pub fn build(b: *std.Build) void {
     shim_cc.addArg("-o");
     const shim_o = shim_cc.addOutputFileArg("shim.o");
 
-    exe.step.dependOn(&fetch_v8.step);
-    exe.root_module.addObjectFile(shim_o);
-    exe.root_module.addObjectFile(b.path("thirdparty/v8/libv8_monolith.a"));
-    exe.root_module.linkSystemLibrary("pthread", .{});
-    exe.root_module.linkSystemLibrary("dl", .{}); // Linux
-        exe.root_module.addObjectFile(.{ .cwd_relative = "/usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so" });
+    mod.addObjectFile(shim_o);
+    mod.addObjectFile(b.path("thirdparty/v8/libv8_monolith.a"));
+    mod.linkSystemLibrary("pthread", .{});
+    mod.linkSystemLibrary("dl", .{}); // Linux
+    mod.addObjectFile(.{ .cwd_relative = "/usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so" });
     b.installArtifact(exe);
 
     const run_step = b.step("run", "Run the app");
