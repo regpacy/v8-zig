@@ -15,10 +15,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="clean main">
+    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="v8 loads">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.zig" beforeDir="false" afterPath="$PROJECT_DIR$/build.zig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.zig" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.zig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/root.zig" beforeDir="false" afterPath="$PROJECT_DIR$/src/root.zig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +57,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "Zig build.Build and Run.executor": "Run",
+    "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
@@ -109,7 +111,7 @@
       <option name="presentableId" value="Default" />
       <updated>1784479569381</updated>
       <workItem from="1784479570397" duration="4530000" />
-      <workItem from="1784487227261" duration="852000" />
+      <workItem from="1784487227261" duration="4721000" />
     </task>
     <task id="LOCAL-00001" summary="fist commit">
       <option name="closed" value="true" />
@@ -143,7 +145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784480551538</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="v8 loads">
+      <option name="closed" value="true" />
+      <created>1784488094155</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1784488094155</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -165,6 +175,7 @@
     <MESSAGE value="add v8" />
     <MESSAGE value="remove comments from build" />
     <MESSAGE value="clean main" />
-    <option name="LAST_COMMIT_MESSAGE" value="clean main" />
+    <MESSAGE value="v8 loads" />
+    <option name="LAST_COMMIT_MESSAGE" value="v8 loads" />
   </component>
 </project>
