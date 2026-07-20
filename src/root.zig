@@ -83,7 +83,7 @@ extern fn v8shim_value_uint32(context: ?*Context, value: ?*Value) u32;
 extern fn v8shim_object_new(isolate: ?*Isolate) ?*Object;
 extern fn v8shim_object_set(context: ?*Context, object: ?*Object, key: ?*Value, value: ?*Value) bool;
 
-pub const FunctionCallback = *const fn (info: ?*const FunctionCallbackInfo) callconv(.C) void;
+pub const FunctionCallback = *const fn (info: ?*const FunctionCallbackInfo) callconv(.c) void;
 
 extern fn v8shim_function_template_new(isolate: ?*Isolate, callback: FunctionCallback) ?*FunctionTemplate;
 extern fn v8shim_function_template_get_function(context: ?*Context, template: ?*FunctionTemplate) ?*Function;
