@@ -27,6 +27,10 @@ pub const String = opaque {};
 pub const Script = opaque {};
 pub const Value = opaque {};
 pub const Utf8Value = opaque {};
+pub const Object = opaque {};
+pub const FunctionTemplate = opaque {};
+pub const Function = opaque {};
+pub const FunctionCallbackInfo = opaque {};
 
 // --- Real out-of-line V8 symbols, bound directly by mangled name ---
 
@@ -64,6 +68,7 @@ extern fn v8shim_handle_scope_delete(scope: ?*HandleScope) void;
 extern fn v8shim_context_new(isolate: ?*Isolate) ?*Context;
 extern fn v8shim_context_scope_new(context: ?*Context) ?*ContextScope;
 extern fn v8shim_context_scope_delete(scope: ?*ContextScope) void;
+extern fn v8shim_context_global(context: ?*Context) ?*Object;
 
 extern fn v8shim_string_new_utf8(isolate: ?*Isolate, data: [*:0]const u8) ?*String;
 
@@ -74,6 +79,18 @@ extern fn v8shim_value_to_utf8(isolate: ?*Isolate, value: ?*Value) ?*Utf8Value;
 extern fn v8shim_utf8value_delete(utf8_value: ?*Utf8Value) void;
 extern fn v8shim_utf8value_cstr(utf8_value: ?*Utf8Value) [*:0]const u8;
 extern fn v8shim_value_uint32(context: ?*Context, value: ?*Value) u32;
+
+extern fn v8shim_object_new(isolate: ?*Isolate) ?*Object;
+extern fn v8shim_object_set(context: ?*Context, object: ?*Object, key: ?*Value, value: ?*Value) bool;
+
+pub const FunctionCallback = *const fn (info: ?*const FunctionCallbackInfo) callconv(.C) void;
+
+extern fn v8shim_function_template_new(isolate: ?*Isolate, callback: FunctionCallback) ?*FunctionTemplate;
+extern fn v8shim_function_template_get_function(context: ?*Context, template: ?*FunctionTemplate) ?*Function;
+
+extern fn v8shim_fci_length(info: ?*const FunctionCallbackInfo) c_int;
+extern fn v8shim_fci_get(info: ?*const FunctionCallbackInfo, i: c_int) ?*Value;
+extern fn v8shim_fci_get_isolate(info: ?*const FunctionCallbackInfo) ?*Isolate;
 
 // --- Ergonomic Zig wrappers ---
 
@@ -153,6 +170,10 @@ pub fn deleteContextScope(scope: ?*ContextScope) void {
     v8shim_context_scope_delete(scope);
 }
 
+pub fn contextGlobal(context: ?*Context) ?*Object {
+    return v8shim_context_global(context);
+}
+
 pub fn newStringFromUtf8(isolate: ?*Isolate, data: [*:0]const u8) ?*String {
     return v8shim_string_new_utf8(isolate, data);
 }
@@ -179,6 +200,34 @@ pub fn utf8ValueCStr(utf8_value: ?*Utf8Value) [*:0]const u8 {
 
 pub fn valueToUint32(context: ?*Context, value: ?*Value) u32 {
     return v8shim_value_uint32(context, value);
+}
+
+pub fn newObject(isolate: ?*Isolate) ?*Object {
+    return v8shim_object_new(isolate);
+}
+
+pub fn objectSet(context: ?*Context, object: ?*Object, key: ?*Value, value: ?*Value) bool {
+    return v8shim_object_set(context, object, key, value);
+}
+
+pub fn newFunctionTemplate(isolate: ?*Isolate, callback: FunctionCallback) ?*FunctionTemplate {
+    return v8shim_function_template_new(isolate, callback);
+}
+
+pub fn functionTemplateGetFunction(context: ?*Context, template: ?*FunctionTemplate) ?*Function {
+    return v8shim_function_template_get_function(context, template);
+}
+
+pub fn fciLength(info: ?*const FunctionCallbackInfo) c_int {
+    return v8shim_fci_length(info);
+}
+
+pub fn fciGet(info: ?*const FunctionCallbackInfo, i: c_int) ?*Value {
+    return v8shim_fci_get(info, i);
+}
+
+pub fn fciGetIsolate(info: ?*const FunctionCallbackInfo) ?*Isolate {
+    return v8shim_fci_get_isolate(info);
 }
 
 test "basic version call" {

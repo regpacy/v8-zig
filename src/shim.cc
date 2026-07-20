@@ -23,11 +23,15 @@
 
 #include "include/libplatform/libplatform.h"
 #include "include/v8-context.h"
+#include "include/v8-function.h"
+#include "include/v8-function-callback.h"
 #include "include/v8-initialization.h"
 #include "include/v8-isolate.h"
 #include "include/v8-local-handle.h"
+#include "include/v8-object.h"
 #include "include/v8-primitive.h"
 #include "include/v8-script.h"
+#include "include/v8-template.h"
 
 using Handle = void*;
 
@@ -128,6 +132,10 @@ void v8shim_context_scope_delete(void* scope) {
   delete static_cast<v8::Context::Scope*>(scope);
 }
 
+Handle v8shim_context_global(Handle context) {
+  return ToHandle(FromHandle<v8::Context>(context)->Global());
+}
+
 // --- String ---
 
 Handle v8shim_string_new_utf8(v8::Isolate* isolate, const char* data) {
@@ -168,6 +176,53 @@ uint32_t v8shim_value_uint32(Handle context, Handle value) {
   return FromHandle<v8::Value>(value)
       ->Uint32Value(FromHandle<v8::Context>(context))
       .ToChecked();
+}
+
+// --- Object ---
+
+Handle v8shim_object_new(v8::Isolate* isolate) {
+  return ToHandle(v8::Object::New(isolate));
+}
+
+bool v8shim_object_set(Handle context, Handle object, Handle key,
+                        Handle value) {
+  return FromHandle<v8::Object>(object)
+      ->Set(FromHandle<v8::Context>(context), FromHandle<v8::Value>(key),
+            FromHandle<v8::Value>(value))
+      .ToChecked();
+}
+
+// --- FunctionTemplate ---
+
+Handle v8shim_function_template_new(v8::Isolate* isolate,
+                                     v8::FunctionCallback callback) {
+  return ToHandle(v8::FunctionTemplate::New(isolate, callback));
+}
+
+Handle v8shim_function_template_get_function(Handle context, Handle tmpl) {
+  return ToHandle(FromHandle<v8::FunctionTemplate>(tmpl)
+                       ->GetFunction(FromHandle<v8::Context>(context))
+                       .ToLocalChecked());
+}
+
+// --- FunctionCallbackInfo ---
+//
+// Passed to a v8::FunctionCallback by const reference, which is ABI-identical
+// to a plain pointer -- no shim needed for the callback signature itself,
+// only for reading out of the (inline-only) accessor methods.
+
+int v8shim_fci_length(const v8::FunctionCallbackInfo<v8::Value>* info) {
+  return info->Length();
+}
+
+Handle v8shim_fci_get(const v8::FunctionCallbackInfo<v8::Value>* info,
+                       int i) {
+  return ToHandle((*info)[i]);
+}
+
+v8::Isolate* v8shim_fci_get_isolate(
+    const v8::FunctionCallbackInfo<v8::Value>* info) {
+  return info->GetIsolate();
 }
 
 }  // extern "C"
