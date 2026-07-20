@@ -25,29 +25,50 @@ pub fn build(b: *std.Build) void {
         .use_lld = true,
     });
     mod.linkSystemLibrary("stdc++", .{});
-    mod.addIncludePath(b.path("thirdparty/v8"));
 
-    // Pulls the prebuilt V8 headers/static lib from GitHub releases if
-    // they're not already present locally, so a clean checkout can build
-    // without a manual V8 build/vendoring step first.
-    const fetch_v8 = b.addSystemCommand(&.{
+    // Pulls the prebuilt V8 headers/static lib from GitHub releases. These
+    // are written into Zig's own build cache via addOutputDirectoryArg /
+    // addOutputFileArg (NOT into a path inside this package's own source
+    // tree) for two reasons:
+    //   1. When this package is consumed as a fetched dependency, its
+    //      source tree lives in Zig's read-only, content-addressed global
+    //      package cache -- writing into it there is both wrong and, for
+    //      concurrent/multiple consuming projects, unsafe.
+    //   2. Using output-arg LazyPaths gets Zig's own Run-step caching for
+    //      free: identical inputs (same URL) hit the cache and skip
+    //      re-downloading, so no manual "does the file already exist"
+    //      check is needed.
+    const fetch_include = b.addSystemCommand(&.{
         "sh", "-c",
         \\set -e
-        \\mkdir -p thirdparty/v8
-        \\if [ ! -d thirdparty/v8/include ]; then
-        \\  echo "Fetching V8 headers..." 1>&2
-        \\  curl -fL --connect-timeout 5 --progress-bar -o thirdparty/v8/include.tar.gz https://github.com/regpacy/v8-zig/releases/download/fd/include.tar.gz
-        \\  tar xzf thirdparty/v8/include.tar.gz -C thirdparty/v8
-        \\  rm thirdparty/v8/include.tar.gz
-        \\fi
-        \\if [ ! -f thirdparty/v8/libv8_monolith.a ]; then
-        \\  echo "Fetching libv8_monolith.a..." 1>&2
-        \\  curl -fL --connect-timeout 5 --progress-bar -o thirdparty/v8/libv8_monolith.a https://github.com/regpacy/v8-zig/releases/download/fd/libv8_monolith.a
-        \\fi
+        \\out="$1"
+        \\mkdir -p "$out"
+        \\echo "Fetching V8 headers..." 1>&2
+        \\curl -fL --connect-timeout 5 --progress-bar -o "$out.tar.gz" "$2"
+        \\tar xzf "$out.tar.gz" -C "$out"
+        \\rm "$out.tar.gz"
+        ,
+        "sh",
     });
+    const v8_include_root = fetch_include.addOutputDirectoryArg("v8-include");
+    fetch_include.addArg("https://github.com/regpacy/v8-zig/releases/download/fd/include.tar.gz");
+    // include.tar.gz contains a top-level "include/" directory, so the
+    // actual headers live at v8_include_root/include.
+    const v8_include_dir = v8_include_root.path(b, "include");
+
+    const fetch_libv8 = b.addSystemCommand(&.{
+        "sh", "-c",
+        \\set -e
+        \\echo "Fetching libv8_monolith.a..." 1>&2
+        \\curl -fL --connect-timeout 5 --progress-bar -o "$1" "$2"
+        ,
+        "sh",
+    });
+    const v8_monolith_a = fetch_libv8.addOutputFileArg("libv8_monolith.a");
+    fetch_libv8.addArg("https://github.com/regpacy/v8-zig/releases/download/fd/libv8_monolith.a");
 
     // shim.cc must be compiled against libstdc++ (the same STL
-    // thirdparty/v8/libv8_monolith.a was built with -- its mangled symbols
+    // libv8_monolith.a was built with -- its mangled symbols
     // encode `std::unique_ptr`, not libc++'s `std::__1::unique_ptr`).
     // Zig's bundled clang hardcodes libc++ and ignores -stdlib=libstdc++,
     // so this is compiled out-of-band with the system compiler and the
@@ -82,17 +103,16 @@ pub fn build(b: *std.Build) void {
         "-DNDEBUG",
         "-I",
     });
-    shim_cc.step.dependOn(&fetch_v8.step);
-    shim_cc.addDirectoryArg(b.path("thirdparty/v8"));
+    shim_cc.addDirectoryArg(v8_include_root);
     shim_cc.addArg("-I");
-    shim_cc.addDirectoryArg(b.path("thirdparty/v8/include"));
+    shim_cc.addDirectoryArg(v8_include_dir);
     shim_cc.addArg("-c");
     shim_cc.addFileArg(b.path("src/shim.cc"));
     shim_cc.addArg("-o");
     const shim_o = shim_cc.addOutputFileArg("shim.o");
 
     mod.addObjectFile(shim_o);
-    mod.addObjectFile(b.path("thirdparty/v8/libv8_monolith.a"));
+    mod.addObjectFile(v8_monolith_a);
     mod.linkSystemLibrary("pthread", .{});
     mod.linkSystemLibrary("dl", .{}); // Linux
     mod.addObjectFile(.{ .cwd_relative = "/usr/lib/gcc/x86_64-pc-linux-gnu/16/libstdc++.so" });

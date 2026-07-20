@@ -15,7 +15,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="ow" />
+    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="progress bar">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -107,7 +109,7 @@
       <option name="presentableId" value="Default" />
       <updated>1784479569381</updated>
       <workItem from="1784479570397" duration="4530000" />
-      <workItem from="1784487227261" duration="7040000" />
+      <workItem from="1784487227261" duration="9331000" />
     </task>
     <task id="LOCAL-00001" summary="fist commit">
       <option name="closed" value="true" />
@@ -173,7 +175,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784555312608</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="progress bar">
+      <option name="closed" value="true" />
+      <created>1784555882934</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1784555882934</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,6 +209,7 @@
     <MESSAGE value="yes" />
     <MESSAGE value="fetch from releases" />
     <MESSAGE value="ow" />
-    <option name="LAST_COMMIT_MESSAGE" value="ow" />
+    <MESSAGE value="progress bar" />
+    <option name="LAST_COMMIT_MESSAGE" value="progress bar" />
   </component>
 </project>
