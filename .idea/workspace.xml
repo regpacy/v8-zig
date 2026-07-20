@@ -15,11 +15,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="v8 loads">
+    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="yes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.zig" beforeDir="false" afterPath="$PROJECT_DIR$/build.zig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.zig" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.zig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/root.zig" beforeDir="false" afterPath="$PROJECT_DIR$/src/root.zig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +68,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "org.rust.first.attach.projects": "true",
+    "settings.editor.selected.configurable": "http.proxy",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -111,7 +110,7 @@
       <option name="presentableId" value="Default" />
       <updated>1784479569381</updated>
       <workItem from="1784479570397" duration="4530000" />
-      <workItem from="1784487227261" duration="4721000" />
+      <workItem from="1784487227261" duration="6020000" />
     </task>
     <task id="LOCAL-00001" summary="fist commit">
       <option name="closed" value="true" />
@@ -153,7 +152,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784488094155</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="yes">
+      <option name="closed" value="true" />
+      <created>1784553495392</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1784553495392</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,6 +183,7 @@
     <MESSAGE value="remove comments from build" />
     <MESSAGE value="clean main" />
     <MESSAGE value="v8 loads" />
-    <option name="LAST_COMMIT_MESSAGE" value="v8 loads" />
+    <MESSAGE value="yes" />
+    <option name="LAST_COMMIT_MESSAGE" value="yes" />
   </component>
 </project>

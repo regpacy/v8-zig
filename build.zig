@@ -27,6 +27,23 @@ pub fn build(b: *std.Build) void {
     exe.root_module.linkSystemLibrary("stdc++", .{});
     exe.root_module.addIncludePath(b.path("thirdparty/v8"));
 
+    // Pulls the prebuilt V8 headers/static lib from GitHub releases if
+    // they're not already present locally, so a clean checkout can build
+    // without a manual V8 build/vendoring step first.
+    const fetch_v8 = b.addSystemCommand(&.{
+        "sh", "-c",
+        \\set -e
+        \\mkdir -p thirdparty/v8
+        \\if [ ! -d thirdparty/v8/include ]; then
+        \\  curl -fsSL -o thirdparty/v8/include.tar.gz https://github.com/regpacy/v8-zig/releases/download/fd/include.tar.gz
+        \\  tar xzf thirdparty/v8/include.tar.gz -C thirdparty/v8
+        \\  rm thirdparty/v8/include.tar.gz
+        \\fi
+        \\if [ ! -f thirdparty/v8/libv8_monolith.a ]; then
+        \\  curl -fsSL -o thirdparty/v8/libv8_monolith.a https://github.com/regpacy/v8-zig/releases/download/fd/libv8_monolith.a
+        \\fi
+    });
+
     // shim.cc must be compiled against libstdc++ (the same STL
     // thirdparty/v8/libv8_monolith.a was built with -- its mangled symbols
     // encode `std::unique_ptr`, not libc++'s `std::__1::unique_ptr`).
@@ -63,6 +80,7 @@ pub fn build(b: *std.Build) void {
         "-DNDEBUG",
         "-I",
     });
+    shim_cc.step.dependOn(&fetch_v8.step);
     shim_cc.addDirectoryArg(b.path("thirdparty/v8"));
     shim_cc.addArg("-I");
     shim_cc.addDirectoryArg(b.path("thirdparty/v8/include"));
@@ -71,6 +89,7 @@ pub fn build(b: *std.Build) void {
     shim_cc.addArg("-o");
     const shim_o = shim_cc.addOutputFileArg("shim.o");
 
+    exe.step.dependOn(&fetch_v8.step);
     exe.root_module.addObjectFile(shim_o);
     exe.root_module.addObjectFile(b.path("thirdparty/v8/libv8_monolith.a"));
     exe.root_module.linkSystemLibrary("pthread", .{});
