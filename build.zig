@@ -35,12 +35,14 @@ pub fn build(b: *std.Build) void {
         \\set -e
         \\mkdir -p thirdparty/v8
         \\if [ ! -d thirdparty/v8/include ]; then
-        \\  curl -fsSL -o thirdparty/v8/include.tar.gz https://github.com/regpacy/v8-zig/releases/download/fd/include.tar.gz
+        \\  echo "Fetching V8 headers..." 1>&2
+        \\  curl -fL --connect-timeout 5 --progress-bar -o thirdparty/v8/include.tar.gz https://github.com/regpacy/v8-zig/releases/download/fd/include.tar.gz
         \\  tar xzf thirdparty/v8/include.tar.gz -C thirdparty/v8
         \\  rm thirdparty/v8/include.tar.gz
         \\fi
         \\if [ ! -f thirdparty/v8/libv8_monolith.a ]; then
-        \\  curl -fsSL -o thirdparty/v8/libv8_monolith.a https://github.com/regpacy/v8-zig/releases/download/fd/libv8_monolith.a
+        \\  echo "Fetching libv8_monolith.a..." 1>&2
+        \\  curl -fL --connect-timeout 5 --progress-bar -o thirdparty/v8/libv8_monolith.a https://github.com/regpacy/v8-zig/releases/download/fd/libv8_monolith.a
         \\fi
     });
 
