@@ -77,8 +77,12 @@ extern fn v8shim_value_uint32(context: ?*Context, value: ?*Value) u32;
 
 // --- Ergonomic Zig wrappers ---
 
-pub fn initializeIcuDefaultLocation(exec_path: [*:0]const u8) bool {
-    return v8shim_initialize_icu_default_location(exec_path);
+pub const IcuError = error{IcuInitializationFailed};
+
+pub fn initializeIcuDefaultLocation(exec_path: [*:0]const u8) IcuError!void {
+    if (!v8shim_initialize_icu_default_location(exec_path)) {
+        return error.IcuInitializationFailed;
+    }
 }
 
 pub fn initializeExternalStartupData(exec_path: [*:0]const u8) void {
