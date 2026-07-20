@@ -17,9 +17,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="fix wrong dir while fetching dependency">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/root.zig" beforeDir="false" afterPath="$PROJECT_DIR$/src/root.zig" afterDir="false" />
+    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="icu returns error">
+      <change beforePath="$PROJECT_DIR$/src/main.zig" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.zig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +113,7 @@
       <workItem from="1784479570397" duration="4530000" />
       <workItem from="1784487227261" duration="10359000" />
       <workItem from="1784584840129" duration="375000" />
-      <workItem from="1784586953601" duration="140000" />
+      <workItem from="1784586953601" duration="469000" />
     </task>
     <task id="LOCAL-00001" summary="fist commit">
       <option name="closed" value="true" />
@@ -196,7 +195,15 @@
       <option name="project" value="LOCAL" />
       <updated>1784563244728</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="icu returns error">
+      <option name="closed" value="true" />
+      <created>1784587093938</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1784587093938</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -224,6 +231,7 @@
     <MESSAGE value="ow" />
     <MESSAGE value="progress bar" />
     <MESSAGE value="fix wrong dir while fetching dependency" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix wrong dir while fetching dependency" />
+    <MESSAGE value="icu returns error" />
+    <option name="LAST_COMMIT_MESSAGE" value="icu returns error" />
   </component>
 </project>

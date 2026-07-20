@@ -4,10 +4,10 @@ const v8 = @import("v8_zig");
 pub fn main(init: std.process.Init) !void {
     const argv0: [*:0]const u8 = init.minimal.args.vector[0];
 
-    if (!v8.initializeIcuDefaultLocation(argv0)) {
+    v8.initializeIcuDefaultLocation(argv0) catch {
         std.debug.print("Failed to initialize ICU\n", .{});
         return error.IcuInitFailed;
-    }
+    };
     v8.initializeExternalStartupData(argv0);
 
     const platform = v8.newDefaultPlatform();
