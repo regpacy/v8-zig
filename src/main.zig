@@ -2,11 +2,21 @@ const std = @import("std");
 const v8 = @import("v8_zig");
 
 pub fn main(init: std.process.Init) !void {
-    const argv0: [*:0]const u8 = init.minimal.args.vector[0];
+    // args.vector is raw argv on POSIX but a WTF-16 command line on Windows;
+    // the iterator abstracts both and hands back (WTF-8) bytes. V8 only uses
+    // argv[0] to locate icudtl.dat/snapshot files next to the executable, and
+    // reads them during the Initialize* calls, so the iterator's buffer only
+    // needs to outlive those.
+    var args_it = try std.process.Args.Iterator.initAllocator(init.minimal.args, init.gpa);
+    defer args_it.deinit();
+    const argv0_slice: [:0]const u8 = args_it.next() orelse "v8_zig";
+    const argv0: [*:0]const u8 = argv0_slice.ptr;
 
+    // The Windows release lib ships without an icudtl.dat, so ICU data can
+    // legitimately be missing: Intl-dependent APIs won't work but core JS
+    // (everything this demo does) is unaffected. Warn instead of aborting.
     v8.initializeIcuDefaultLocation(argv0) catch {
-        std.debug.print("Failed to initialize ICU\n", .{});
-        return error.IcuInitFailed;
+        std.debug.print("warning: ICU initialization failed; continuing without ICU data\n", .{});
     };
     v8.initializeExternalStartupData(argv0);
 

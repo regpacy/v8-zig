@@ -15,6 +15,7 @@
 //!   compiler/headers used to build libv8_monolith.a.
 
 const std = @import("std");
+const builtin = @import("builtin");
 
 pub const Platform = opaque {};
 pub const ArrayBufferAllocator = opaque {};
@@ -33,16 +34,32 @@ pub const Function = opaque {};
 pub const FunctionCallbackInfo = opaque {};
 
 // --- Real out-of-line V8 symbols, bound directly by mangled name ---
+//
+// The Linux libv8_monolith.a carries Itanium-mangled names; the Windows
+// v8_monolith.lib was built with clang-cl and carries MSVC-mangled ones, so
+// the direct bindings pick the right spelling per target.
 
-extern fn @"_ZN2v82V810GetVersionEv"() [*:0]const u8;
-extern fn @"_ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv"() ?*ArrayBufferAllocator;
+const use_msvc_mangling = builtin.os.tag == .windows;
+
+const v8_get_version = @extern(*const fn () callconv(.c) [*:0]const u8, .{
+    .name = if (use_msvc_mangling)
+        "?GetVersion@V8@v8@@SAPEBDXZ"
+    else
+        "_ZN2v82V810GetVersionEv",
+});
+const v8_new_default_allocator = @extern(*const fn () callconv(.c) ?*ArrayBufferAllocator, .{
+    .name = if (use_msvc_mangling)
+        "?NewDefaultAllocator@Allocator@ArrayBuffer@v8@@SAPEAV123@XZ"
+    else
+        "_ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv",
+});
 
 pub fn getVersion() [*:0]const u8 {
-    return @"_ZN2v82V810GetVersionEv"();
+    return v8_get_version();
 }
 
 pub fn newDefaultArrayBufferAllocator() ?*ArrayBufferAllocator {
-    return @"_ZN2v811ArrayBuffer9Allocator19NewDefaultAllocatorEv"();
+    return v8_new_default_allocator();
 }
 
 // --- Inline-only V8 constructs, bound through the shim.cc C ABI ---

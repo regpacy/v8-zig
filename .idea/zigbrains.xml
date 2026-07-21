@@ -5,7 +5,7 @@
       <list><![CDATA[{
   "name": "v8_zig",
   "version": "0.0.0",
-  "path": "/home/regp/CLionProjects/v8-zig",
+  "path": "C:\\Users\\regpa\\CLionProjects\\v8-zig",
   "steps": [
     {
       "name": "install",
@@ -30,12 +30,12 @@
   ],
   "modules": [
     {
-      "root": "src/root.zig",
+      "root": "src\\root.zig",
       "public": true,
       "imports": []
     },
     {
-      "root": "src/main.zig",
+      "root": "src\\main.zig",
       "public": false,
       "imports": [
         {
@@ -50,5 +50,5 @@
 }]]></list>
     </option>
   </component>
-  <component name="ZigToolchain" toolchain="3ded017a-749b-4d5b-ac15-6d60721b902f" />
+  <component name="ZigToolchain" toolchain="257aae1a-1ffe-48dc-baa8-697127542021" />
 </project>
