@@ -85,12 +85,16 @@ extern fn v8shim_object_set(context: ?*Context, object: ?*Object, key: ?*Value, 
 
 pub const FunctionCallback = *const fn (info: ?*const FunctionCallbackInfo) callconv(.c) void;
 
-extern fn v8shim_function_template_new(isolate: ?*Isolate, callback: FunctionCallback) ?*FunctionTemplate;
+extern fn v8shim_function_template_new(isolate: ?*Isolate, callback: FunctionCallback, data: ?*Value) ?*FunctionTemplate;
 extern fn v8shim_function_template_get_function(context: ?*Context, template: ?*FunctionTemplate) ?*Function;
 
 extern fn v8shim_fci_length(info: ?*const FunctionCallbackInfo) c_int;
 extern fn v8shim_fci_get(info: ?*const FunctionCallbackInfo, i: c_int) ?*Value;
 extern fn v8shim_fci_get_isolate(info: ?*const FunctionCallbackInfo) ?*Isolate;
+extern fn v8shim_fci_get_data(info: ?*const FunctionCallbackInfo) ?*Value;
+
+extern fn v8shim_external_new(isolate: ?*Isolate, value: ?*anyopaque) ?*Value;
+extern fn v8shim_external_value(external: ?*Value) ?*anyopaque;
 
 // --- Ergonomic Zig wrappers ---
 
@@ -210,8 +214,8 @@ pub fn objectSet(context: ?*Context, object: ?*Object, key: ?*Value, value: ?*Va
     return v8shim_object_set(context, object, key, value);
 }
 
-pub fn newFunctionTemplate(isolate: ?*Isolate, callback: FunctionCallback) ?*FunctionTemplate {
-    return v8shim_function_template_new(isolate, callback);
+pub fn newFunctionTemplate(isolate: ?*Isolate, callback: FunctionCallback, data: ?*Value) ?*FunctionTemplate {
+    return v8shim_function_template_new(isolate, callback, data);
 }
 
 pub fn functionTemplateGetFunction(context: ?*Context, template: ?*FunctionTemplate) ?*Function {
@@ -228,6 +232,18 @@ pub fn fciGet(info: ?*const FunctionCallbackInfo, i: c_int) ?*Value {
 
 pub fn fciGetIsolate(info: ?*const FunctionCallbackInfo) ?*Isolate {
     return v8shim_fci_get_isolate(info);
+}
+
+pub fn fciGetData(info: ?*const FunctionCallbackInfo) ?*Value {
+    return v8shim_fci_get_data(info);
+}
+
+pub fn newExternal(isolate: ?*Isolate, value: ?*anyopaque) ?*Value {
+    return v8shim_external_new(isolate, value);
+}
+
+pub fn externalValue(external: ?*Value) ?*anyopaque {
+    return v8shim_external_value(external);
 }
 
 test "basic version call" {

@@ -23,6 +23,7 @@
 
 #include "include/libplatform/libplatform.h"
 #include "include/v8-context.h"
+#include "include/v8-external.h"
 #include "include/v8-function.h"
 #include "include/v8-function-callback.h"
 #include "include/v8-initialization.h"
@@ -195,8 +196,11 @@ bool v8shim_object_set(Handle context, Handle object, Handle key,
 // --- FunctionTemplate ---
 
 Handle v8shim_function_template_new(v8::Isolate* isolate,
-                                     v8::FunctionCallback callback) {
-  return ToHandle(v8::FunctionTemplate::New(isolate, callback));
+                                     v8::FunctionCallback callback,
+                                     Handle data) {
+  v8::Local<v8::Value> data_local =
+      data ? FromHandle<v8::Value>(data) : v8::Local<v8::Value>();
+  return ToHandle(v8::FunctionTemplate::New(isolate, callback, data_local));
 }
 
 Handle v8shim_function_template_get_function(Handle context, Handle tmpl) {
@@ -223,6 +227,22 @@ Handle v8shim_fci_get(const v8::FunctionCallbackInfo<v8::Value>* info,
 v8::Isolate* v8shim_fci_get_isolate(
     const v8::FunctionCallbackInfo<v8::Value>* info) {
   return info->GetIsolate();
+}
+
+Handle v8shim_fci_get_data(const v8::FunctionCallbackInfo<v8::Value>* info) {
+  return ToHandle(info->Data());
+}
+
+// --- External ---
+
+Handle v8shim_external_new(v8::Isolate* isolate, void* value) {
+  return ToHandle(v8::External::New(isolate, value,
+                                     v8::kExternalPointerTypeTagDefault));
+}
+
+void* v8shim_external_value(Handle external) {
+  return FromHandle<v8::Value>(external).As<v8::External>()->Value(
+      v8::kExternalPointerTypeTagDefault);
 }
 
 }  // extern "C"

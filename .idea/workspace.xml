@@ -17,8 +17,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="">
+    <list default="true" id="ba41e410-32bf-439f-9d63-df7cb7f87287" name="Changes" comment="fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/root.zig" beforeDir="false" afterPath="$PROJECT_DIR$/src/root.zig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/shim.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/shim.cc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +116,7 @@
       <workItem from="1784487227261" duration="10359000" />
       <workItem from="1784584840129" duration="375000" />
       <workItem from="1784586953601" duration="508000" />
-      <workItem from="1784587579900" duration="1891000" />
+      <workItem from="1784587579900" duration="3232000" />
     </task>
     <task id="LOCAL-00001" summary="fist commit">
       <option name="closed" value="true" />
@@ -212,7 +214,23 @@
       <option name="project" value="LOCAL" />
       <updated>1784587458557</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="new funcs">
+      <option name="closed" value="true" />
+      <created>1784589474874</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1784589474874</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fix">
+      <option name="closed" value="true" />
+      <created>1784589619481</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1784589619481</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -242,6 +260,8 @@
     <MESSAGE value="fix wrong dir while fetching dependency" />
     <MESSAGE value="icu returns error" />
     <MESSAGE value="fix build" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix build" />
+    <MESSAGE value="new funcs" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
 </project>
