@@ -24,6 +24,7 @@
 #include <cstring>
 
 #include "include/libplatform/libplatform.h"
+#include "include/v8-array-buffer.h"
 #include "include/v8-context.h"
 #include "include/v8-exception.h"
 #include "include/v8-external.h"
@@ -38,6 +39,8 @@
 #include "include/v8-primitive.h"
 #include "include/v8-script.h"
 #include "include/v8-template.h"
+#include "include/v8-typed-array.h"
+#include "include/v8-value.h"
 
 using Handle = void*;
 
@@ -150,6 +153,16 @@ Handle v8shim_string_new_utf8(v8::Isolate* isolate, const char* data) {
                        .ToLocalChecked());
 }
 
+// Explicit-length variant: NewFromUtf8's default (-1) length relies on
+// strlen, so it can't safely handle buffer bytes (embedded NULs, no
+// guaranteed terminator).
+Handle v8shim_string_new_utf8_len(v8::Isolate* isolate, const char* data,
+                                   int length) {
+  return ToHandle(v8::String::NewFromUtf8(isolate, data,
+                                           v8::NewStringType::kNormal, length)
+                       .ToLocalChecked());
+}
+
 // --- Script ---
 
 // Formats an uncaught JS exception the same way d8 does ("<file>:<line>:
@@ -212,6 +225,46 @@ Handle v8shim_json_parse(Handle context, Handle json_string) {
     ReportExceptionAndExit(isolate, &try_catch);
   }
   return ToHandle(result.ToLocalChecked());
+}
+
+// --- ArrayBuffer / TypedArray ---
+
+Handle v8shim_array_buffer_new(v8::Isolate* isolate, size_t byte_length) {
+  return ToHandle(v8::ArrayBuffer::New(isolate, byte_length));
+}
+
+void* v8shim_array_buffer_data(Handle array_buffer) {
+  return FromHandle<v8::ArrayBuffer>(array_buffer)->Data();
+}
+
+size_t v8shim_array_buffer_byte_length(Handle array_buffer) {
+  return FromHandle<v8::ArrayBuffer>(array_buffer)->ByteLength();
+}
+
+Handle v8shim_uint8array_new(Handle array_buffer, size_t byte_offset,
+                              size_t length) {
+  return ToHandle(v8::Uint8Array::New(FromHandle<v8::ArrayBuffer>(array_buffer),
+                                       byte_offset, length));
+}
+
+Handle v8shim_typed_array_buffer(Handle value) {
+  return ToHandle(FromHandle<v8::Uint8Array>(value)->Buffer());
+}
+
+size_t v8shim_typed_array_byte_offset(Handle value) {
+  return FromHandle<v8::Uint8Array>(value)->ByteOffset();
+}
+
+size_t v8shim_typed_array_byte_length(Handle value) {
+  return FromHandle<v8::Uint8Array>(value)->ByteLength();
+}
+
+bool v8shim_value_is_number(Handle value) {
+  return FromHandle<v8::Value>(value)->IsNumber();
+}
+
+bool v8shim_value_is_uint8array(Handle value) {
+  return FromHandle<v8::Value>(value)->IsUint8Array();
 }
 
 // --- Value ---
@@ -305,6 +358,10 @@ v8::Isolate* v8shim_fci_get_isolate(
 
 Handle v8shim_fci_get_data(const v8::FunctionCallbackInfo<v8::Value>* info) {
   return ToHandle(info->Data());
+}
+
+Handle v8shim_fci_this(const v8::FunctionCallbackInfo<v8::Value>* info) {
+  return ToHandle(info->This());
 }
 
 void v8shim_fci_set_return_value(

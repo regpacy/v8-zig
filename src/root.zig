@@ -32,6 +32,7 @@ pub const Object = opaque {};
 pub const FunctionTemplate = opaque {};
 pub const Function = opaque {};
 pub const FunctionCallbackInfo = opaque {};
+pub const ArrayBuffer = opaque {};
 
 // --- Real out-of-line V8 symbols, bound directly by mangled name ---
 //
@@ -88,6 +89,7 @@ extern fn v8shim_context_scope_delete(scope: ?*ContextScope) void;
 extern fn v8shim_context_global(context: ?*Context) ?*Object;
 
 extern fn v8shim_string_new_utf8(isolate: ?*Isolate, data: [*:0]const u8) ?*String;
+extern fn v8shim_string_new_utf8_len(isolate: ?*Isolate, data: [*]const u8, length: c_int) ?*String;
 
 extern fn v8shim_script_compile(context: ?*Context, source: ?*String, filename: ?*Value) ?*Script;
 extern fn v8shim_script_run(context: ?*Context, script: ?*Script) ?*Value;
@@ -120,6 +122,18 @@ extern fn v8shim_fci_set_return_value(info: ?*const FunctionCallbackInfo, value:
 
 extern fn v8shim_external_new(isolate: ?*Isolate, value: ?*anyopaque) ?*Value;
 extern fn v8shim_external_value(external: ?*Value) ?*anyopaque;
+
+extern fn v8shim_fci_this(info: ?*const FunctionCallbackInfo) ?*Value;
+
+extern fn v8shim_array_buffer_new(isolate: ?*Isolate, byte_length: usize) ?*ArrayBuffer;
+extern fn v8shim_array_buffer_data(array_buffer: ?*ArrayBuffer) ?*anyopaque;
+extern fn v8shim_array_buffer_byte_length(array_buffer: ?*ArrayBuffer) usize;
+extern fn v8shim_uint8array_new(array_buffer: ?*ArrayBuffer, byte_offset: usize, length: usize) ?*Object;
+extern fn v8shim_typed_array_buffer(value: ?*Value) ?*ArrayBuffer;
+extern fn v8shim_typed_array_byte_offset(value: ?*Value) usize;
+extern fn v8shim_typed_array_byte_length(value: ?*Value) usize;
+extern fn v8shim_value_is_number(value: ?*Value) bool;
+extern fn v8shim_value_is_uint8array(value: ?*Value) bool;
 
 // --- Ergonomic Zig wrappers ---
 
@@ -205,6 +219,10 @@ pub fn contextGlobal(context: ?*Context) ?*Object {
 
 pub fn newStringFromUtf8(isolate: ?*Isolate, data: [*:0]const u8) ?*String {
     return v8shim_string_new_utf8(isolate, data);
+}
+
+pub fn newStringFromUtf8Len(isolate: ?*Isolate, data: [*]const u8, length: c_int) ?*String {
+    return v8shim_string_new_utf8_len(isolate, data, length);
 }
 
 pub fn compileScript(context: ?*Context, source: ?*String, filename: ?*Value) ?*Script {
@@ -293,6 +311,46 @@ pub fn newExternal(isolate: ?*Isolate, value: ?*anyopaque) ?*Value {
 
 pub fn externalValue(external: ?*Value) ?*anyopaque {
     return v8shim_external_value(external);
+}
+
+pub fn fciThis(info: ?*const FunctionCallbackInfo) ?*Value {
+    return v8shim_fci_this(info);
+}
+
+pub fn newArrayBuffer(isolate: ?*Isolate, byte_length: usize) ?*ArrayBuffer {
+    return v8shim_array_buffer_new(isolate, byte_length);
+}
+
+pub fn arrayBufferData(array_buffer: ?*ArrayBuffer) ?*anyopaque {
+    return v8shim_array_buffer_data(array_buffer);
+}
+
+pub fn arrayBufferByteLength(array_buffer: ?*ArrayBuffer) usize {
+    return v8shim_array_buffer_byte_length(array_buffer);
+}
+
+pub fn newUint8Array(array_buffer: ?*ArrayBuffer, byte_offset: usize, length: usize) ?*Object {
+    return v8shim_uint8array_new(array_buffer, byte_offset, length);
+}
+
+pub fn typedArrayBuffer(value: ?*Value) ?*ArrayBuffer {
+    return v8shim_typed_array_buffer(value);
+}
+
+pub fn typedArrayByteOffset(value: ?*Value) usize {
+    return v8shim_typed_array_byte_offset(value);
+}
+
+pub fn typedArrayByteLength(value: ?*Value) usize {
+    return v8shim_typed_array_byte_length(value);
+}
+
+pub fn valueIsNumber(value: ?*Value) bool {
+    return v8shim_value_is_number(value);
+}
+
+pub fn valueIsUint8Array(value: ?*Value) bool {
+    return v8shim_value_is_uint8array(value);
 }
 
 test "basic version call" {
