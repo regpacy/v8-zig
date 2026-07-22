@@ -98,6 +98,8 @@ extern fn v8shim_utf8value_cstr(utf8_value: ?*Utf8Value) [*:0]const u8;
 extern fn v8shim_value_uint32(context: ?*Context, value: ?*Value) u32;
 
 extern fn v8shim_integer_new(isolate: ?*Isolate, value: i32) ?*Value;
+extern fn v8shim_boolean_new(isolate: ?*Isolate, value: bool) ?*Value;
+extern fn v8shim_isolate_current_context(isolate: ?*Isolate) ?*Context;
 
 extern fn v8shim_object_new(isolate: ?*Isolate) ?*Object;
 extern fn v8shim_object_set(context: ?*Context, object: ?*Object, key: ?*Value, value: ?*Value) bool;
@@ -229,6 +231,14 @@ pub fn valueToUint32(context: ?*Context, value: ?*Value) u32 {
 
 pub fn newInteger(isolate: ?*Isolate, value: i32) ?*Value {
     return v8shim_integer_new(isolate, value);
+}
+
+pub fn newBoolean(isolate: ?*Isolate, value: bool) ?*Value {
+    return v8shim_boolean_new(isolate, value);
+}
+
+pub fn isolateCurrentContext(isolate: ?*Isolate) ?*Context {
+    return v8shim_isolate_current_context(isolate);
 }
 
 pub fn newObject(isolate: ?*Isolate) ?*Object {

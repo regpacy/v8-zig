@@ -222,6 +222,14 @@ Handle v8shim_integer_new(v8::Isolate* isolate, int32_t value) {
   return ToHandle(v8::Integer::New(isolate, value));
 }
 
+Handle v8shim_boolean_new(v8::Isolate* isolate, bool value) {
+  return ToHandle(v8::Boolean::New(isolate, value));
+}
+
+Handle v8shim_isolate_current_context(v8::Isolate* isolate) {
+  return ToHandle(isolate->GetCurrentContext());
+}
+
 // --- Object ---
 
 Handle v8shim_object_new(v8::Isolate* isolate) {
