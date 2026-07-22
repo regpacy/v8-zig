@@ -218,6 +218,10 @@ uint32_t v8shim_value_uint32(Handle context, Handle value) {
       .ToChecked();
 }
 
+Handle v8shim_integer_new(v8::Isolate* isolate, int32_t value) {
+  return ToHandle(v8::Integer::New(isolate, value));
+}
+
 // --- Object ---
 
 Handle v8shim_object_new(v8::Isolate* isolate) {
