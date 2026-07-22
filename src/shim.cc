@@ -19,16 +19,20 @@
 // boundary and Local<T> is memcpy'd in/out of it -- a safe, standard-legal
 // reinterpretation given the matching size/layout.
 
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #include "include/libplatform/libplatform.h"
 #include "include/v8-context.h"
+#include "include/v8-exception.h"
 #include "include/v8-external.h"
 #include "include/v8-function.h"
 #include "include/v8-function-callback.h"
 #include "include/v8-initialization.h"
 #include "include/v8-isolate.h"
 #include "include/v8-local-handle.h"
+#include "include/v8-message.h"
 #include "include/v8-object.h"
 #include "include/v8-primitive.h"
 #include "include/v8-script.h"
@@ -147,16 +151,51 @@ Handle v8shim_string_new_utf8(v8::Isolate* isolate, const char* data) {
 
 // --- Script ---
 
-Handle v8shim_script_compile(Handle context, Handle source) {
-  return ToHandle(v8::Script::Compile(FromHandle<v8::Context>(context),
-                                       FromHandle<v8::String>(source))
-                       .ToLocalChecked());
+// Formats an uncaught JS exception the same way d8 does ("<file>:<line>:
+// Uncaught <message>") and exits, instead of letting the caller's
+// ToLocalChecked() abort the whole process with a much less useful fatal
+// error. try_catch must be the active TryCatch that caught this exception.
+[[noreturn]] static void ReportExceptionAndExit(v8::Isolate* isolate,
+                                                 v8::TryCatch* try_catch) {
+  v8::HandleScope handle_scope(isolate);
+  v8::String::Utf8Value exception(isolate, try_catch->Exception());
+  v8::Local<v8::Message> message = try_catch->Message();
+  if (message.IsEmpty()) {
+    fprintf(stderr, "Uncaught %s\n", *exception);
+  } else {
+    v8::Local<v8::Context> context = isolate->GetCurrentContext();
+    v8::String::Utf8Value filename(isolate, message->GetScriptResourceName());
+    int line = message->GetLineNumber(context).FromMaybe(-1);
+    fprintf(stderr, "%s:%d: Uncaught %s\n", *filename, line, *exception);
+  }
+  std::exit(1);
+}
+
+Handle v8shim_script_compile(Handle context, Handle source, Handle filename) {
+  v8::Local<v8::Context> ctx = FromHandle<v8::Context>(context);
+  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::TryCatch try_catch(isolate);
+
+  v8::ScriptOrigin origin(FromHandle<v8::Value>(filename));
+  v8::MaybeLocal<v8::Script> maybe_script =
+      v8::Script::Compile(ctx, FromHandle<v8::String>(source), &origin);
+  if (maybe_script.IsEmpty()) {
+    ReportExceptionAndExit(isolate, &try_catch);
+  }
+  return ToHandle(maybe_script.ToLocalChecked());
 }
 
 Handle v8shim_script_run(Handle context, Handle script) {
   v8::Local<v8::Script> script_local = FromHandle<v8::Script>(script);
-  return ToHandle(
-      script_local->Run(FromHandle<v8::Context>(context)).ToLocalChecked());
+  v8::Local<v8::Context> ctx = FromHandle<v8::Context>(context);
+  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::TryCatch try_catch(isolate);
+
+  v8::MaybeLocal<v8::Value> result = script_local->Run(ctx);
+  if (result.IsEmpty()) {
+    ReportExceptionAndExit(isolate, &try_catch);
+  }
+  return ToHandle(result.ToLocalChecked());
 }
 
 // --- Value ---
