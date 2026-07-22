@@ -92,6 +92,8 @@ extern fn v8shim_string_new_utf8(isolate: ?*Isolate, data: [*:0]const u8) ?*Stri
 extern fn v8shim_script_compile(context: ?*Context, source: ?*String, filename: ?*Value) ?*Script;
 extern fn v8shim_script_run(context: ?*Context, script: ?*Script) ?*Value;
 
+extern fn v8shim_json_parse(context: ?*Context, json_string: ?*String) ?*Value;
+
 extern fn v8shim_value_to_utf8(isolate: ?*Isolate, value: ?*Value) ?*Utf8Value;
 extern fn v8shim_utf8value_delete(utf8_value: ?*Utf8Value) void;
 extern fn v8shim_utf8value_cstr(utf8_value: ?*Utf8Value) [*:0]const u8;
@@ -211,6 +213,10 @@ pub fn compileScript(context: ?*Context, source: ?*String, filename: ?*Value) ?*
 
 pub fn runScript(context: ?*Context, script: ?*Script) ?*Value {
     return v8shim_script_run(context, script);
+}
+
+pub fn jsonParse(context: ?*Context, json_string: ?*String) ?*Value {
+    return v8shim_json_parse(context, json_string);
 }
 
 pub fn valueToUtf8(isolate: ?*Isolate, value: ?*Value) ?*Utf8Value {

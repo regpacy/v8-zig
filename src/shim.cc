@@ -31,6 +31,7 @@
 #include "include/v8-function-callback.h"
 #include "include/v8-initialization.h"
 #include "include/v8-isolate.h"
+#include "include/v8-json.h"
 #include "include/v8-local-handle.h"
 #include "include/v8-message.h"
 #include "include/v8-object.h"
@@ -192,6 +193,21 @@ Handle v8shim_script_run(Handle context, Handle script) {
   v8::TryCatch try_catch(isolate);
 
   v8::MaybeLocal<v8::Value> result = script_local->Run(ctx);
+  if (result.IsEmpty()) {
+    ReportExceptionAndExit(isolate, &try_catch);
+  }
+  return ToHandle(result.ToLocalChecked());
+}
+
+// --- JSON ---
+
+Handle v8shim_json_parse(Handle context, Handle json_string) {
+  v8::Local<v8::Context> ctx = FromHandle<v8::Context>(context);
+  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::TryCatch try_catch(isolate);
+
+  v8::MaybeLocal<v8::Value> result =
+      v8::JSON::Parse(ctx, FromHandle<v8::String>(json_string));
   if (result.IsEmpty()) {
     ReportExceptionAndExit(isolate, &try_catch);
   }
