@@ -99,6 +99,7 @@ extern fn v8shim_value_uint32(context: ?*Context, value: ?*Value) u32;
 
 extern fn v8shim_object_new(isolate: ?*Isolate) ?*Object;
 extern fn v8shim_object_set(context: ?*Context, object: ?*Object, key: ?*Value, value: ?*Value) bool;
+extern fn v8shim_object_get(context: ?*Context, object: ?*Object, key: ?*Value) ?*Value;
 
 pub const FunctionCallback = *const fn (info: ?*const FunctionCallbackInfo) callconv(.c) void;
 
@@ -109,6 +110,7 @@ extern fn v8shim_fci_length(info: ?*const FunctionCallbackInfo) c_int;
 extern fn v8shim_fci_get(info: ?*const FunctionCallbackInfo, i: c_int) ?*Value;
 extern fn v8shim_fci_get_isolate(info: ?*const FunctionCallbackInfo) ?*Isolate;
 extern fn v8shim_fci_get_data(info: ?*const FunctionCallbackInfo) ?*Value;
+extern fn v8shim_fci_set_return_value(info: ?*const FunctionCallbackInfo, value: ?*Value) void;
 
 extern fn v8shim_external_new(isolate: ?*Isolate, value: ?*anyopaque) ?*Value;
 extern fn v8shim_external_value(external: ?*Value) ?*anyopaque;
@@ -231,6 +233,10 @@ pub fn objectSet(context: ?*Context, object: ?*Object, key: ?*Value, value: ?*Va
     return v8shim_object_set(context, object, key, value);
 }
 
+pub fn objectGet(context: ?*Context, object: ?*Object, key: ?*Value) ?*Value {
+    return v8shim_object_get(context, object, key);
+}
+
 pub fn newFunctionTemplate(isolate: ?*Isolate, callback: FunctionCallback, data: ?*Value) ?*FunctionTemplate {
     return v8shim_function_template_new(isolate, callback, data);
 }
@@ -253,6 +259,10 @@ pub fn fciGetIsolate(info: ?*const FunctionCallbackInfo) ?*Isolate {
 
 pub fn fciGetData(info: ?*const FunctionCallbackInfo) ?*Value {
     return v8shim_fci_get_data(info);
+}
+
+pub fn fciSetReturnValue(info: ?*const FunctionCallbackInfo, value: ?*Value) void {
+    v8shim_fci_set_return_value(info, value);
 }
 
 pub fn newExternal(isolate: ?*Isolate, value: ?*anyopaque) ?*Value {

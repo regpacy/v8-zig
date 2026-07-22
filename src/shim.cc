@@ -193,6 +193,13 @@ bool v8shim_object_set(Handle context, Handle object, Handle key,
       .ToChecked();
 }
 
+Handle v8shim_object_get(Handle context, Handle object, Handle key) {
+  return ToHandle(FromHandle<v8::Object>(object)
+                       ->Get(FromHandle<v8::Context>(context),
+                             FromHandle<v8::Value>(key))
+                       .ToLocalChecked());
+}
+
 // --- FunctionTemplate ---
 
 Handle v8shim_function_template_new(v8::Isolate* isolate,
@@ -231,6 +238,11 @@ v8::Isolate* v8shim_fci_get_isolate(
 
 Handle v8shim_fci_get_data(const v8::FunctionCallbackInfo<v8::Value>* info) {
   return ToHandle(info->Data());
+}
+
+void v8shim_fci_set_return_value(
+    const v8::FunctionCallbackInfo<v8::Value>* info, Handle value) {
+  info->GetReturnValue().Set(FromHandle<v8::Value>(value));
 }
 
 // --- External ---
